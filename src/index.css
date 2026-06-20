@@ -1,15 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --brand-deep: #14324a;
-  --brand-primary: #2b5876;
-  --text-main: #223142;
-  --line-main: #cfd6ce;
-  --line-sub: #d3d9d2;
+  --text-main: #25384e;
 }
 
 * {
@@ -19,29 +15,64 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Noto Sans HK', sans-serif;
+  font-family: 'Manrope', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   color: var(--text-main);
   background:
-    radial-gradient(circle at 10% -10%, rgba(188, 197, 203, 0.24) 0%, transparent 28%),
-    radial-gradient(circle at 100% 10%, rgba(222, 216, 205, 0.28) 0%, transparent 30%),
-    linear-gradient(180deg, #f7f6f2 0%, #f1f0eb 100%);
+    radial-gradient(circle at 10% -8%, rgba(204, 184, 139, 0.2) 0%, transparent 34%),
+    radial-gradient(circle at 92% 12%, rgba(173, 195, 224, 0.2) 0%, transparent 36%),
+    linear-gradient(180deg, #f5f7fa 0%, #edf1f5 100%);
 }
 
 #root {
   min-height: 100vh;
 }
 
-@keyframes riseIn {
+@keyframes feedbackFadeOut {
   from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
     opacity: 1;
     transform: translateY(0);
   }
+  to {
+    opacity: 0;
+    transform: translateY(2px);
+  }
 }
 
-.animate-rise {
-  animation: riseIn 0.45s ease both;
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Noto Serif SC', 'Songti SC', serif;
+}
+
+.scrollbar-fancy {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 149, 178, 0.7) rgba(219, 227, 236, 0.7);
+}
+
+.scrollbar-fancy::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-fancy::-webkit-scrollbar-track {
+  background: rgba(210, 220, 231, 0.65);
+  border-radius: 999px;
+}
+
+.scrollbar-fancy::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(134, 161, 191, 0.95), rgba(87, 117, 150, 0.95));
+  border-radius: 999px;
+  border: 1px solid rgba(237, 242, 248, 0.95);
+}
+
+.animate-feedback-fade-out {
+  animation: feedbackFadeOut 3s ease forwards;
+}
+
+@media (max-width: 768px) {
+  body {
+    background:
+      radial-gradient(circle at 15% 10%, rgba(204, 184, 139, 0.25) 0%, transparent 42%),
+      linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%);
+  }
 }
