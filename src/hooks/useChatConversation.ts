@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { Locale } from '../content/copy';
 import { sendChatMessage } from '../services/chatSocket';
 import type { ChatMessage } from '../types/chat';
@@ -22,6 +22,15 @@ export function useChatConversation(initialBotMessage: string) {
   const [messages, setMessages] = useState<ChatMessage[]>([createMessage('bot', initialBotMessage)]);
   const conversationIdRef = useRef(createConversationId());
   const isThinking = pendingCount > 0;
+
+  const updateInitialBotMessage = useCallback((content: string) => {
+    setMessages((prev) => {
+      if (prev.length !== 1 || prev[0].sender !== 'bot') {
+        return prev;
+      }
+      return [{ ...prev[0], content }];
+    });
+  }, []);
 
   async function submitMessage(locale: Locale): Promise<SubmitResult> {
     const text = input.trim();
@@ -70,6 +79,7 @@ export function useChatConversation(initialBotMessage: string) {
     setInput,
     isThinking,
     messages,
-    submitMessage
+    submitMessage,
+    updateInitialBotMessage
   };
 }

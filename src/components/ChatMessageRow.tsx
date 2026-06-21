@@ -16,10 +16,12 @@ interface MessageRowProps {
   rating: number;
   locale: Locale;
   feedbackPhase: FeedbackPhase;
+  thankYouText: string;
+  ratingLabels: string[];
   onRate: (messageId: string, rating: number) => void;
 }
 
-export function ChatMessageRow({ message, rating, locale, feedbackPhase, onRate }: MessageRowProps) {
+export function ChatMessageRow({ message, rating, locale, feedbackPhase, thankYouText, ratingLabels, onRate }: MessageRowProps) {
   const isUser = message.sender === 'user';
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const visibleRating = hoverRating ?? rating;
@@ -51,18 +53,19 @@ export function ChatMessageRow({ message, rating, locale, feedbackPhase, onRate 
             <div className="relative ml-1 h-4 min-w-[170px] md:min-w-[220px]">
               {feedbackPhase === 'thank-you' ? (
                 <span className="absolute inset-0 flex items-center whitespace-nowrap animate-feedback-fade-out font-medium tracking-[0.06em] text-[#7f8fa4]">
-                  {copy[locale].thankYou}
+                  {thankYouText}
                 </span>
               ) : (
                 <div className="absolute inset-0 flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((star) => {
                     const filled = star <= visibleRating;
+                    const label = ratingLabels[star - 1] || copy[locale].ratingLabels[star as 1 | 2 | 3 | 4 | 5];
                     return (
                       <button
                         key={star}
                         type="button"
                         aria-label={`${star} 星`}
-                        title={copy[locale].ratingLabels[star as 1 | 2 | 3 | 4 | 5]}
+                        title={label}
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(null)}
                         onFocus={() => setHoverRating(star)}
@@ -71,7 +74,7 @@ export function ChatMessageRow({ message, rating, locale, feedbackPhase, onRate 
                         className={`group/star relative rounded-full p-0.5 leading-none transition ${filled ? 'text-[#c59b4a]' : 'text-[#b6c1cf] hover:text-[#8aa0bb]'}`}
                       >
                         <span className="pointer-events-none absolute left-1/2 bottom-[-22px] z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#d8e1eb] bg-white px-2 py-0.5 text-[10px] font-medium tracking-[0.03em] text-[#41556f] opacity-0 shadow-[0_4px_12px_rgba(22,37,62,0.08)] transition duration-150 group-hover/star:opacity-100 group-focus-visible/star:opacity-100">
-                          {copy[locale].ratingLabels[star as 1 | 2 | 3 | 4 | 5]}
+                          {label}
                         </span>
                         <StarIcon filled={filled} />
                       </button>
