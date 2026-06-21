@@ -1,9 +1,9 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useMessageFeedback } from './useMessageFeedback';
-import { submitBotFeedback } from '../services/mockBot';
+import { submitBotFeedback } from '../services/feedbackApi';
 
-vi.mock('../services/mockBot', () => ({
+vi.mock('../services/feedbackApi', () => ({
   submitBotFeedback: vi.fn(async () => undefined)
 }));
 

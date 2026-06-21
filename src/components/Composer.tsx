@@ -11,6 +11,8 @@ interface ComposerProps {
 }
 
 export function Composer({ input, isThinking, locale, onInputChange, onSubmit }: ComposerProps) {
+  const isSubmitDisabled = !input.trim();
+
   return (
     <form onSubmit={onSubmit} className="border-t border-[#dbe1e9] bg-[#f4f7fb] px-3 py-2.5 md:px-4 md:py-3">
       <div className="relative">
@@ -25,9 +27,9 @@ export function Composer({ input, isThinking, locale, onInputChange, onSubmit }:
         </div>
         <button
           type="submit"
-          disabled={isThinking}
+          disabled={isSubmitDisabled}
           aria-label={copy[locale].send}
-          title={copy[locale].send}
+          title={isThinking ? `${copy[locale].send} (processing...)` : copy[locale].send}
           className="absolute right-2 top-1/2 z-10 flex h-[54px] w-[54px] -translate-y-1/2 items-center justify-center rounded-[10px] border border-[#1d3e62] bg-[#234b75] text-white shadow-[0_8px_16px_rgba(29,62,98,0.28)] transition duration-150 hover:scale-[1.03] hover:bg-[#1f4268] hover:shadow-[0_12px_20px_rgba(29,62,98,0.32)] active:scale-100 active:shadow-[0_6px_12px_rgba(29,62,98,0.26)] disabled:cursor-not-allowed disabled:bg-[#8fa2b7] disabled:shadow-none"
         >
           <SendIcon />

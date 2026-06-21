@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { submitBotFeedback } from '../services/mockBot';
+import { submitBotFeedback } from '../services/feedbackApi';
 import type { FeedbackPhase } from '../types/chat';
 
 export function useMessageFeedback() {
