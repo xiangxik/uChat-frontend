@@ -55,7 +55,10 @@ vi.mock('./backendConfig', () => ({
     chatSendDestination: '/app/chat.send',
     chatMessageSubscription: '/user/queue/chat.messages',
     chatErrorSubscription: '/user/queue/chat.errors'
-  })),
+  }))
+}));
+
+vi.mock('./endpoint', () => ({
   resolveWebSocketUrl: vi.fn(() => 'ws://localhost:8080/ws')
 }));
 

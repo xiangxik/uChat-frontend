@@ -60,7 +60,9 @@ describe('useChatConversation', () => {
     });
 
     expect(result.current.messages).toHaveLength(3);
-    expect(result.current.messages[2].sender).toBe('bot');
-    expect(result.current.messages[2].content).toContain('Contract rejected by server');
+    const lastMessage = result.current.messages[2];
+    expect(lastMessage).toBeDefined();
+    expect(lastMessage?.sender).toBe('bot');
+    expect(lastMessage?.content).toContain('Contract rejected by server');
   });
 });

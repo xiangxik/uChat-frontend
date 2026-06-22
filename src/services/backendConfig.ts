@@ -1,3 +1,5 @@
+import { requestJson } from './httpClient';
+
 export interface BackendConfig {
   appName: string;
   defaultLocale: 'en' | 'zh';
@@ -17,7 +19,6 @@ export interface BackendConfig {
   chatErrorSubscription: string;
 }
 
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8080').replace(/\/$/, '');
 const backendConfigPromiseByLocale = new Map<'default' | 'en' | 'zh', Promise<BackendConfig>>();
 
 function defaultConfig(locale: 'en' | 'zh'): BackendConfig {
@@ -64,28 +65,6 @@ function resolveRequestedLocale(locale?: 'en' | 'zh'): 'en' | 'zh' {
   return locale === 'zh' ? 'zh' : 'en';
 }
 
-export function resolveHttpUrl(path: string) {
-  if (/^https?:\/\//.test(path)) {
-    return path;
-  }
-
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  return `${apiBaseUrl}${normalizedPath}`;
-}
-
-export function resolveWebSocketUrl(path: string) {
-  if (/^wss?:\/\//.test(path)) {
-    return path;
-  }
-
-  if (/^https?:\/\//.test(path)) {
-    return path.replace(/^http/, 'ws');
-  }
-
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  return `${apiBaseUrl.replace(/^http/, 'ws')}${normalizedPath}`;
-}
-
 export async function getBackendConfig(locale?: 'en' | 'zh'): Promise<BackendConfig> {
   const cacheKey: 'default' | 'en' | 'zh' = locale ?? 'default';
   const requestedLocale = resolveRequestedLocale(locale);
@@ -94,13 +73,9 @@ export async function getBackendConfig(locale?: 'en' | 'zh'): Promise<BackendCon
     const query = locale ? `?locale=${requestedLocale}` : '';
     backendConfigPromiseByLocale.set(
       cacheKey,
-      fetch(resolveHttpUrl(`/api/config${query}`))
-        .then(async (response) => {
-          if (!response.ok) {
-            throw new Error(`Config request failed with status ${response.status}`);
-          }
-          return (await response.json()) as BackendConfig;
-        })
+      requestJson<BackendConfig>({
+        path: `/api/config${query}`
+      })
         .catch((error: unknown) => {
           console.warn('Falling back to default backend config.', error);
           return defaultConfig(requestedLocale);

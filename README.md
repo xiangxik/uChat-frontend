@@ -24,6 +24,11 @@ npm --prefix /Volumes/NVME/github/xiangxik/uChat/uChat-frontend run dev -- --hos
 
 Frontend starts on http://127.0.0.1:5173.
 
+## Environment variables
+
+- `VITE_API_BASE_URL`: backend base URL (default `http://127.0.0.1:8080`).
+- `VITE_CHAT_RESPONSE_TIMEOUT_MS`: websocket chat response timeout in milliseconds (default `30000`).
+
 ## Build
 
 ```bash

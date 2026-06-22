@@ -1,5 +1,6 @@
 import { Client, type IMessage } from '@stomp/stompjs';
-import { getBackendConfig, resolveWebSocketUrl } from './backendConfig';
+import { getBackendConfig } from './backendConfig';
+import { resolveWebSocketUrl } from './endpoint';
 import {
   parseChatErrorEvent,
   parseChatMessageEvent,
@@ -21,6 +22,24 @@ interface PendingRequest {
   timeoutId: number;
 }
 
+const DEFAULT_CHAT_RESPONSE_TIMEOUT_MS = 30000;
+
+function resolveChatResponseTimeoutMs(): number {
+  const raw = import.meta.env.VITE_CHAT_RESPONSE_TIMEOUT_MS;
+  if (!raw) {
+    return DEFAULT_CHAT_RESPONSE_TIMEOUT_MS;
+  }
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return DEFAULT_CHAT_RESPONSE_TIMEOUT_MS;
+  }
+
+  return parsed;
+}
+
+const CHAT_RESPONSE_TIMEOUT_MS = resolveChatResponseTimeoutMs();
+
 class ChatSocketService {
   private client: Client | null = null;
   private configPromise: Promise<void> | null = null;
@@ -36,7 +55,7 @@ class ChatSocketService {
     return new Promise<ChatMessageEvent>((resolve, reject) => {
       const timeoutId = window.setTimeout(() => {
         this.rejectPendingById(request.clientMessageId, 'Chat response timed out.');
-      }, 15000);
+      }, CHAT_RESPONSE_TIMEOUT_MS);
 
       this.pendingRequests.set(request.clientMessageId, {
         clientMessageId: request.clientMessageId,

@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import type { Locale } from '../content/copy';
 import { sendChatMessage } from '../services/chatSocket';
+import { toAppError } from '../services/apiError';
 import type { ChatMessage } from '../types/chat';
 import { createMessage } from '../utils/chat';
 
@@ -25,10 +26,11 @@ export function useChatConversation(initialBotMessage: string) {
 
   const updateInitialBotMessage = useCallback((content: string) => {
     setMessages((prev) => {
-      if (prev.length !== 1 || prev[0].sender !== 'bot') {
+      const firstMessage = prev[0];
+      if (prev.length !== 1 || !firstMessage || firstMessage.sender !== 'bot') {
         return prev;
       }
-      return [{ ...prev[0], content }];
+      return [{ ...firstMessage, content }];
     });
   }, []);
 
@@ -59,13 +61,15 @@ export function useChatConversation(initialBotMessage: string) {
       setMessages((prev) => [...prev, botMessage]);
       return { botMessageId: botMessage.id };
     } catch (error) {
+      const appError = toAppError(
+        error,
+        locale === 'en'
+          ? 'Unable to reach the service right now. Please try again shortly.'
+          : '暂时未能连接服务，请稍后再试。'
+      );
       const fallbackMessage = createMessage(
         'bot',
-        error instanceof Error
-          ? error.message
-          : locale === 'en'
-            ? 'Unable to reach the service right now. Please try again shortly.'
-            : '暂时未能连接服务，请稍后再试。'
+        appError.message
       );
       setMessages((prev) => [...prev, fallbackMessage]);
       return { botMessageId: null };

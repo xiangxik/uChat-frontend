@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { submitBotFeedback } from '../services/feedbackApi';
+import { toAppError } from '../services/apiError';
 import type { FeedbackPhase } from '../types/chat';
 
 export function useMessageFeedback() {
@@ -48,7 +49,10 @@ export function useMessageFeedback() {
       delete feedbackTimersRef.current[messageId];
     }, 900);
 
-    void submitBotFeedback(messageId, nextRating);
+    void submitBotFeedback(messageId, nextRating).catch((error: unknown) => {
+      const appError = toAppError(error, 'Failed to submit feedback.');
+      console.warn('Feedback submission failed:', appError.message);
+    });
   }
 
   function getMessageRating(messageId: string) {
