@@ -6,7 +6,7 @@ import { formatMessageTime } from '../utils/chat';
 import { BotIcon, StarIcon, UserIcon } from './icons';
 
 const messagePanelClasses =
-  'max-w-[90%] rounded-[10px] border px-3 py-2 text-[13px] leading-5 shadow-[0_5px_16px_rgba(22,37,62,0.08)] md:max-w-[78%]';
+  'max-w-[90%] rounded-[10px] border px-3 py-2 text-[13px] leading-5 shadow-[0_5px_16px_rgba(22,37,62,0.08)] md:max-w-[82%]';
 
 const userMessageClasses = 'border-[#d5dce6] bg-[#eef3f9] text-[#243449]';
 const botMessageClasses = 'border-[#e0e5ec] bg-[#ffffff] text-[#2a3b51]';
@@ -27,23 +27,30 @@ export function ChatMessageRow({ message, rating, locale, feedbackPhase, thankYo
   const visibleRating = hoverRating ?? rating;
 
   return (
-    <div className={`flex items-start gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex items-start ${isUser ? 'justify-end gap-2' : 'justify-start gap-2'}`}>
       {!isUser && (
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#dde4ed] bg-[#ffffff] text-[#4f6380] shadow-[0_3px_8px_rgba(22,37,62,0.08)]">
+        <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#dde4ed] bg-[#ffffff] text-[#4f6380] shadow-[0_3px_8px_rgba(22,37,62,0.08)]">
           <BotIcon />
         </span>
       )}
 
-      <div className="flex flex-col">
+      <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
         <article className={`relative ${messagePanelClasses} ${isUser ? userMessageClasses : botMessageClasses}`}>
-          <span
-            aria-hidden="true"
-            className={`pointer-events-none absolute top-2 h-2.5 w-2.5 rotate-45 ${
-              isUser
-                ? 'right-[-6px] border-r border-t border-[#d5dce6] bg-[#eef3f9]'
-                : 'left-[-6px] border-b border-l border-[#e0e5ec] bg-[#ffffff]'
-            }`}
-          />
+          {isUser ? (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute right-[-8px] top-[10px] h-0 w-0 border-y-[7px] border-y-transparent border-l-[8px] border-l-[#d5dce6]"
+            >
+              <span className="absolute right-[1px] top-[-7px] h-0 w-0 border-y-[7px] border-y-transparent border-l-[8px] border-l-[#eef3f9]" />
+            </span>
+          ) : (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-[-8px] top-[10px] h-0 w-0 border-y-[7px] border-y-transparent border-r-[8px] border-r-[#e0e5ec]"
+            >
+              <span className="absolute left-[1px] top-[-7px] h-0 w-0 border-y-[7px] border-y-transparent border-r-[8px] border-r-[#ffffff]" />
+            </span>
+          )}
           <p className="m-0">{message.content}</p>
         </article>
 
@@ -90,7 +97,7 @@ export function ChatMessageRow({ message, rating, locale, feedbackPhase, thankYo
       </div>
 
       {isUser && (
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#d6b97f] bg-[linear-gradient(145deg,#d8c092,#bd9b60)] text-[#2b3c52] shadow-[0_3px_8px_rgba(44,58,81,0.12)]">
+        <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#d6b97f] bg-[linear-gradient(145deg,#d8c092,#bd9b60)] text-[#2b3c52] shadow-[0_3px_8px_rgba(44,58,81,0.12)]">
           <UserIcon />
         </span>
       )}
